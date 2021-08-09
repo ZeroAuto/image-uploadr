@@ -17,3 +17,7 @@
   width: 100%;
   text-align: center;
 }
+
+.errors {
+  color: red;
+}

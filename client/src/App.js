@@ -7,6 +7,7 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
+      errors: [],
       filteredImages: [],
       images: [],
       loading: false,
@@ -39,37 +40,54 @@ class App extends Component {
   }
 
   handleChange = async (e) => {
-    this.setState({
+    await this.setState({
       loading: true,
+      errors: [],
     });
 
+    const errors = [];
     try {
+      const types = ['image/png', 'image/jpeg', 'image/gif'];
       const formData = new FormData();
       const uploadedFile = e.target.files[0];
-      formData.append('image', uploadedFile);
 
-      const response = await axios.post(
-        'http://localhost:8080/upload',
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
+      if (!_.includes(types, uploadedFile.type)) {
+        errors.push(`${uploadedFile.type} is not supported`);
+      }
+
+      if (uploadedFile.size > 100000) {
+        errors.push('file size exceeded');
+      }
+
+      console.log(errors);
+
+      if (_.size(errors) === 0) {
+        formData.append('image', uploadedFile);
+        const response = await axios.post(
+          'http://localhost:8080/upload',
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            }
           }
-        }
-      );
+        );
 
-      if (response) {
-        const images = this.state.images;
-        images.push(response.data);
-        this.setState({
-          searchText: '',
-          images: images,
-        });
-        this.updateFilteredImages();
+        if (response) {
+          const images = this.state.images;
+          images.push(response.data);
+          this.setState({
+            searchText: '',
+            images: images,
+          });
+          this.updateFilteredImages();
+        }
+      } else {
       }
     } finally {
       this.setState({
         loading: false,
+        errors: errors,
       });
     }
   }
@@ -102,6 +120,22 @@ class App extends Component {
   }
 
   render() {
+    let errors = null
+
+    if (_.size(this.state.errors) > 0) {
+      errors = (
+        <ul className="errors">
+          {
+            this.state.errors.map((error, index) => {
+              return <li key={index}>
+                {error}
+              </li>
+            })
+          }
+        </ul>
+      )
+    }
+
     return (
       <div className="app">
         <div className="action-row">
@@ -123,6 +157,11 @@ class App extends Component {
             onChange={ this.handleChange }
             style={{ display: 'none' }}
           />
+        </div>
+        <div className="error-messages">
+          {
+            errors
+          }
         </div>
         <div className="image-grid">
           {
