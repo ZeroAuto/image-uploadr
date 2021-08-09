@@ -171,6 +171,7 @@ class App extends Component {
                 key={index}
               >
                 <img 
+                  className="uploaded-image"
                   src={image.url} 
                   alt={image.public_id}
                 />
