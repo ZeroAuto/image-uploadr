@@ -47,14 +47,16 @@ class App extends Component {
 
     const errors = [];
     try {
-      const types = ['image/png', 'image/jpeg', 'image/gif'];
+      const types = ['image/png', 'image/jpeg'];
       const formData = new FormData();
       const uploadedFile = e.target.files[0];
 
+      // allow for some error handling
       if (!_.includes(types, uploadedFile.type)) {
         errors.push(`${uploadedFile.type} is not supported`);
       }
 
+      // this one is arbitrary
       if (uploadedFile.size > 100000) {
         errors.push('file size exceeded');
       }
