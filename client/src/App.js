@@ -100,27 +100,35 @@ class App extends Component {
   render() {
     return (
       <div className="app">
-        <input
-          type="text"
-          value={ this.state.searchText }
-          onChange={ this.searchTextChangeHandler }
-        />
-        <button onClick={ this.uploadButtonClickHandler }>Upload</button>
-        <input
-          type="file"
-          ref={ this.hiddenFileInput }
-          onChange={ this.handleChange }
-          style={{ display: 'none' }}
-        />
-        {
-          this.state.filteredImages.map((image, index) => {
-            return <img 
-              key={index}
-              src={image.url} 
-              alt={image.public_id}
-            />
-          })
-        }
+        <div className="action-row">
+          <input
+            type="text"
+            value={ this.state.searchText }
+            onChange={ this.searchTextChangeHandler }
+          />
+          <button onClick={ this.uploadButtonClickHandler }>Upload</button>
+          <input
+            type="file"
+            ref={ this.hiddenFileInput }
+            onChange={ this.handleChange }
+            style={{ display: 'none' }}
+          />
+        </div>
+        <div className="image-grid">
+          {
+            this.state.filteredImages.map((image, index) => {
+              return <div
+                className="image-wrapper"
+                key={index}
+              >
+                <img 
+                  src={image.url} 
+                  alt={image.public_id}
+                />
+              </div>
+            })
+          }
+        </div>
       </div>
     )
   }
