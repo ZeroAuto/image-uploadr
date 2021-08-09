@@ -82,11 +82,12 @@ class App extends Component {
   }
 
   updateFilteredImages = () => {
+    const filterTextArray = this.state.searchText.split(' ');
     const filteredImages = [];
 
     _.forEach(this.state.images, (image) => {
       const imageText = image.public_id.toLowerCase();
-      if (_.includes(imageText, this.state.searchText.toLowerCase())) {
+      if (new RegExp(filterTextArray.join("|")).test(imageText)) {
         filteredImages.push(image);
       }
     });
@@ -106,6 +107,7 @@ class App extends Component {
         <div className="action-row">
           <input
             type="text"
+            placeholder="Search Images"
             value={ this.state.searchText }
             onChange={ this.searchTextChangeHandler }
           />
