@@ -71,11 +71,10 @@ class App extends Component {
     }
   }
 
-  searchTextChangeHandler = (e) => {
-    this.setState({
+  searchTextChangeHandler = async (e) => {
+    await this.setState({
       searchText: e.target.value,
     });
-
     this.updateFilteredImages();
   }
 
