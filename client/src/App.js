@@ -42,6 +42,7 @@ class App extends Component {
     this.setState({
       loading: true,
     });
+
     try {
       const formData = new FormData();
       const uploadedFile = e.target.files[0];
@@ -59,9 +60,7 @@ class App extends Component {
 
       if (response) {
         const images = this.state.images;
-        console.table(response.data);
         images.push(response.data);
-        console.table(images);
         this.setState({
           searchText: '',
           images: images,
@@ -113,7 +112,9 @@ class App extends Component {
           <button
             disabled={ this.state.loading }
             onClick={ this.uploadButtonClickHandler }
-          >Upload</button>
+          >
+            Upload
+          </button>
           <input
             type="file"
             ref={ this.hiddenFileInput }
