@@ -59,10 +59,14 @@ class App extends Component {
 
       if (response) {
         const images = this.state.images;
+        console.table(response.data);
         images.push(response.data);
+        console.table(images);
         this.setState({
+          searchText: '',
           images: images,
         });
+        this.updateFilteredImages();
       }
     } finally {
       this.setState({
@@ -106,7 +110,10 @@ class App extends Component {
             value={ this.state.searchText }
             onChange={ this.searchTextChangeHandler }
           />
-          <button onClick={ this.uploadButtonClickHandler }>Upload</button>
+          <button
+            disabled={ this.state.loading }
+            onClick={ this.uploadButtonClickHandler }
+          >Upload</button>
           <input
             type="file"
             ref={ this.hiddenFileInput }
