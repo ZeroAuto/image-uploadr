@@ -25,8 +25,21 @@ app.get('/images', (req, res) => {
 });
 
 app.post('/upload', (req, res) => {
-  const image = Object.values(req.files)[0];
-  cloudinary.uploader.upload(image.path).then(results => res.json(results));
+  const image = req.files.image;
+  console.log(image);
+  cloudinary.v2.uploader.upload(
+    image.path, 
+    {
+      public_id: image.originalFilename,
+    },
+    (error, result) => {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(result);
+      }
+    }
+  ).then(results => res.json(results));
 });
 
 app.listen(8080, () => console.log('server is running on port 8080'));

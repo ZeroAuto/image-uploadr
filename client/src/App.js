@@ -1,5 +1,6 @@
 import './App.css';
 import axios from 'axios';
+import * as _ from 'lodash';
 import React, { Component } from 'react';
 
 class App extends Component {
@@ -30,11 +31,11 @@ class App extends Component {
       this.setState({
         loading: false,
       });
-    }
-  }
 
-  uploadButtonClickHandler = () => {
-    this.hiddenFileInput.current.click();
+      if (_.size(this.state.images) > 0) {
+        this.updateFilteredImages();
+      }
+    }
   }
 
   handleChange = async (e) => {
@@ -70,9 +71,41 @@ class App extends Component {
     }
   }
 
+  searchTextChangeHandler = (e) => {
+    this.setState({
+      searchText: e.target.value,
+    });
+
+    this.updateFilteredImages();
+  }
+
+  updateFilteredImages = () => {
+    const filteredImages = [];
+
+    _.forEach(this.state.images, (image) => {
+      const imageText = image.public_id.toLowerCase();
+      if (_.includes(imageText, this.state.searchText.toLowerCase())) {
+        filteredImages.push(image);
+      }
+    });
+
+    this.setState({
+      filteredImages: filteredImages,
+    });
+  }
+
+  uploadButtonClickHandler = () => {
+    this.hiddenFileInput.current.click();
+  }
+
   render() {
     return (
       <div className="app">
+        <input
+          type="text"
+          value={ this.state.searchText }
+          onChange={ this.searchTextChangeHandler }
+        />
         <button onClick={ this.uploadButtonClickHandler }>Upload</button>
         <input
           type="file"
@@ -81,7 +114,7 @@ class App extends Component {
           style={{ display: 'none' }}
         />
         {
-          this.state.images.map((image, index) => {
+          this.state.filteredImages.map((image, index) => {
             return <img 
               key={index}
               src={image.url} 
